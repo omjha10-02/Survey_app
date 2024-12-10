@@ -23,12 +23,14 @@ const SignupForm = () => {
     try {
       // Make API call to submit the form using the base URL from the environment variable
       const response = await axios.post(
-        `${process.env.REACT_APP_BASE_URL}/api/auth/signup`,
+        'https://survey-app-b003.onrender.com/api/auth/signup',
         { name, code }
-        console.log(name);
-        console.log(code);
+        
+
       
       );
+              console.log(name);
+        console.log(code);
 
       // If signup is successful, navigate to the quiz page
       if (response.status === 201) {
