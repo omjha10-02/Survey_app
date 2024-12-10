@@ -114,7 +114,7 @@ const SignupForm = () => {
 
     try {
       // Get the base URL from environment variable
-      const baseUrl = process.env.REACT_APP_API_BASE_URL || 'https://survey-app-b003.onrender.com'; // default to your existing URL if not set
+      const baseUrl ='https://survey-app-iyc3.vercel.app'; // default to your existing URL if not set
       const response = await axios.post(
         `${baseUrl}/api/auth/signup`,
         { name, code }
