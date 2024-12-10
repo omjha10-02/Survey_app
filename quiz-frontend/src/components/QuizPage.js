@@ -166,7 +166,7 @@ const QuizPage = () => {
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
-        const response = await axios.get(`${BASE_URL}/api/quiz/questions`);
+        const response = await axios.get('https://survey-app-b003.onrender.com/api/quiz/questions');
         setQuestions(response.data);
       } catch (err) {
         console.error('Error fetching questions', err);
@@ -196,7 +196,7 @@ const QuizPage = () => {
     };
 
     try {
-      await axios.post(`${BASE_URL}/api/quiz/responses`, responseData);
+      await axios.post('https://survey-app-b003.onrender.com/api/quiz/responses', responseData);
       toast.success('Response submitted successfully!');
     } catch (err) {
       console.error('Error submitting response', err);
@@ -221,7 +221,7 @@ const QuizPage = () => {
     };
 
     try {
-      await axios.post(`${BASE_URL}/api/quiz/responses`, responseData);
+      await axios.post('https://survey-app-b003.onrender.com/api/quiz/responses', responseData);
       toast.success('Quiz submitted successfully!', {
         duration: 3000,
         onClose: () => {
