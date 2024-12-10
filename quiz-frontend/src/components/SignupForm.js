@@ -114,7 +114,7 @@ const SignupForm = () => {
 
     try {
       // Get the base URL from environment variable
-      const baseUrl ='https://survey-app-iyc3.vercel.app'; // default to your existing URL if not set
+      const baseUrl = process.env.REACT_APP_API_BASE_URL || 'https://survey-app-iyc3.vercel.app'; // Default to production URL
       const response = await axios.post(
         `${baseUrl}/api/auth/signup`,
         { name, code }
@@ -123,7 +123,9 @@ const SignupForm = () => {
       // If signup is successful, navigate to the quiz page
       if (response.status === 201) {
         toast.success('Signup successful! Redirecting to the quiz...');
-        setTimeout(() => navigate('/questions'), 1500);
+        // Navigate to the appropriate URL based on the environment
+        const frontendUrl = process.env.REACT_APP_FRONTEND_URL || 'http://localhost:3000';
+        setTimeout(() => navigate(`${frontendUrl}/questions`), 1500);
       } else {
         setError('Invalid code or error during signup');
         toast.error('Invalid code or error during signup');
