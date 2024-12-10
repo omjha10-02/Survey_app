@@ -192,7 +192,7 @@ const App = () => {
   // Fetch questions from backend
   useEffect(() => {
     if (userId) {
-      axios.get(`${baseUrl}/api/quiz/questions`)
+      axios.get('https://survey-app-b003.onrender.com/api/quiz/questions')
         .then((response) => {
           setQuestions(response.data);
         })
