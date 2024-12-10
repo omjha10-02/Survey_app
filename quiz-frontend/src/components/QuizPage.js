@@ -148,20 +148,19 @@
 
 
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { toast } from 'react-hot-toast'; // Import react-hot-toast for notifications
-import { Toaster } from 'react-hot-toast'; // Import Toaster for displaying toasts
+import { useNavigate } from 'react-router-dom';
+import toast, { Toaster } from 'react-hot-toast';
 import './QuizPage.css'; // Import CSS file for styling
 
-const BASE_URL = process.env.REACT_APP_BASE_URL || 'http://127.0.0.1:5000'; // Configurable base URL
+const BASE_URL = process.env.REACT_APP_API_BASE_URL || 'https://survey-app-b003.onrender.com'; // Configurable base URL
 
 const QuizPage = () => {
   const [questions, setQuestions] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState(null);
+  const [error, setError] = useState('');
   const [userId, setUserId] = useState('67571162354d8baf9cec174e'); // Example userId
-  const [isLoading, setIsLoading] = useState(true); // Track loading state for questions
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -169,11 +168,10 @@ const QuizPage = () => {
       try {
         const response = await axios.get(`${BASE_URL}/api/quiz/questions`);
         setQuestions(response.data);
-        setIsLoading(false); // Questions are loaded, set loading state to false
       } catch (err) {
         console.error('Error fetching questions', err);
-        setIsLoading(false); // Ensure loading state is false even on error
-        toast.error('Failed to load questions. Please try again later!', { position: 'top-center' });
+        setError('Failed to load questions. Please try again later!');
+        toast.error('Failed to load questions. Please try again later!');
       }
     };
 
@@ -186,7 +184,7 @@ const QuizPage = () => {
 
   const handleNextQuestion = async () => {
     if (selectedOption === null) {
-      toast.error('Please select an option before moving to the next question.', { position: 'top-center' });
+      toast.error('Please select an option before moving to the next question.');
       return;
     }
 
@@ -199,10 +197,10 @@ const QuizPage = () => {
 
     try {
       await axios.post(`${BASE_URL}/api/quiz/responses`, responseData);
-      toast.success('Response submitted successfully!', { position: 'top-center' });
+      toast.success('Response submitted successfully!');
     } catch (err) {
       console.error('Error submitting response', err);
-      toast.error('Failed to submit the response. Please try again!', { position: 'top-center' });
+      toast.error('Failed to submit the response. Please try again!');
     }
 
     setCurrentQuestionIndex((prev) => prev + 1);
@@ -210,8 +208,8 @@ const QuizPage = () => {
   };
 
   const handleSubmitQuiz = async () => {
-    if (selectedOption === null && currentQuestionIndex !== questions.length - 1) {
-      toast.error('Please select an option before submitting the quiz.', { position: 'top-center' });
+    if (selectedOption === null) {
+      toast.error('Please select an option before submitting the quiz.');
       return;
     }
 
@@ -225,76 +223,92 @@ const QuizPage = () => {
     try {
       await axios.post(`${BASE_URL}/api/quiz/responses`, responseData);
       toast.success('Quiz submitted successfully!', {
-        position: 'top-center',
         duration: 3000,
         onClose: () => {
-          toast('Redirecting to results page...', { position: 'top-center', duration: 2000 });
+          toast('Redirecting to results page...', {
+            duration: 2000,
+          });
         },
       });
 
       setTimeout(() => navigate('/view-results'), 3000); // Redirect to results after 3 seconds
     } catch (err) {
       console.error('Error submitting quiz', err);
-      toast.error('Failed to submit the quiz. Please try again!', { position: 'top-center' });
+      toast.error('Failed to submit the quiz. Please try again!');
     }
   };
 
-  if (isLoading) return <p>Loading questions...</p>; // Provide feedback while questions are loading
+  if (questions.length === 0) return <p>Loading questions...</p>;
 
   const currentQuestion = questions[currentQuestionIndex];
   const isLastQuestion = currentQuestionIndex === questions.length - 1;
 
   return (
-    <div className="quiz-container">
-      <div className="progress-bar">
-        <div
-          className="progress"
-          style={{ width: `${((currentQuestionIndex + 1) / questions.length) * 100}%` }}
-        ></div>
-      </div>
-      <div className="question-card">
-        <h2 className="question-number">Question {currentQuestion.number}</h2>
-        <p className="question-text">{currentQuestion.text}</p>
-        <div className="options-container">
-          {currentQuestion.options.map((option, index) => (
-            <div
-              key={index}
-              className={`option-card ${selectedOption === option ? 'selected' : ''}`}
-              onClick={() => handleOptionSelect(option)}
-            >
-              <input
-                type="radio"
-                name="option"
-                id={`option-${index}`}
-                value={option}
-                checked={selectedOption === option}
-                onChange={() => handleOptionSelect(option)}
-                className="radio-input"
-              />
-              <label htmlFor={`option-${index}`} className="option-label">
-                {option}
-              </label>
-            </div>
-          ))}
-        </div>
-        <div className="quiz-buttons">
-          {!isLastQuestion ? (
-            <button className="next-button" onClick={handleNextQuestion}>
-              Next
-            </button>
-          ) : (
-            <button className="submit-button" onClick={handleSubmitQuiz}>
-              Submit Quiz
-            </button>
-          )}
-        </div>
-      </div>
-
-      {/* Toast notifications */}
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500">
       <Toaster />
+      <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-md">
+        <h2 className="text-3xl font-bold text-gray-800 text-center mb-6">
+          Quiz
+        </h2>
+        <div className="progress-bar">
+          <div
+            className="progress"
+            style={{
+              width: `${((currentQuestionIndex + 1) / questions.length) * 100}%`,
+            }}
+          ></div>
+        </div>
+        <div className="question-card">
+          <h3 className="question-number">Question {currentQuestion.number}</h3>
+          <p className="question-text">{currentQuestion.text}</p>
+          <div className="options-container">
+            {currentQuestion.options.map((option, index) => (
+              <div
+                key={index}
+                className={`option-card ${selectedOption === option ? 'selected' : ''}`}
+                onClick={() => handleOptionSelect(option)}
+              >
+                <input
+                  type="radio"
+                  name="option"
+                  id={`option-${index}`}
+                  value={option}
+                  checked={selectedOption === option}
+                  onChange={() => handleOptionSelect(option)}
+                  className="radio-input"
+                />
+                <label htmlFor={`option-${index}`} className="option-label">
+                  {option}
+                </label>
+              </div>
+            ))}
+          </div>
+          <div className="quiz-buttons">
+            {!isLastQuestion ? (
+              <button
+                type="button"
+                className="w-full bg-gradient-to-r from-green-400 to-blue-500 text-white py-2 px-4 rounded-lg font-semibold hover:from-blue-500 hover:to-green-400 transition-transform transform hover:scale-105"
+                onClick={handleNextQuestion}
+              >
+                Next
+              </button>
+            ) : (
+              <button
+                type="button"
+                className="w-full bg-gradient-to-r from-green-400 to-blue-500 text-white py-2 px-4 rounded-lg font-semibold hover:from-blue-500 hover:to-green-400 transition-transform transform hover:scale-105"
+                onClick={handleSubmitQuiz}
+              >
+                Submit Quiz
+              </button>
+            )}
+          </div>
+          {error && <p className="text-red-600 text-sm font-semibold">{error}</p>}
+        </div>
+      </div>
     </div>
   );
 };
 
 export default QuizPage;
+
 
