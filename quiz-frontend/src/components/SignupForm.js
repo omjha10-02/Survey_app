@@ -123,7 +123,7 @@ const SignupForm = () => {
       // If signup is successful, navigate to the quiz page
       if (response.status === 201) {
         toast.success('Signup successful! Redirecting to the quiz...');
-        setTimeout(() => navigate(`${baseUrl}/api/questions`), 1500);
+        setTimeout(() => navigate('/questions'), 1500);
       } else {
         setError('Invalid code or error during signup');
         toast.error('Invalid code or error during signup');
