@@ -25,6 +25,9 @@ const SignupForm = () => {
       const response = await axios.post(
         `${process.env.REACT_APP_BASE_URL}/api/auth/signup`,
         { name, code }
+        console.log(name);
+        console.log(code);
+      
       );
 
       // If signup is successful, navigate to the quiz page
