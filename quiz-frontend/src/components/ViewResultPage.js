@@ -13,11 +13,12 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 
 const ViewResultPage = () => {
   const [results, setResults] = useState([]);
+   const baseUrl = process.env.REACT_APP_API_BASE_URL || 'https://survey-app-iyc3.vercel.app';
 
   useEffect(() => {
     const fetchResults = async () => {
       try {
-        const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/api/dashboard/getresult`);
+        const response = await axios.get(`${baseUrl}/api/dashboard/getresult`);
         setResults(response.data);
       } catch (err) {
         console.error('Error fetching results', err);
