@@ -124,8 +124,8 @@ const SignupForm = () => {
       if (response.status === 201) {
         toast.success('Signup successful! Redirecting to the quiz...');
         // Navigate to the appropriate URL based on the environment
-        const frontendUrl = process.env.REACT_APP_FRONTEND_URL || 'http://localhost:3000';
-        setTimeout(() => navigate(`${frontendUrl}/questions`), 1500);
+        
+        setTimeout(() => navigate(`${baseUrl}/questions`), 1500);
       } else {
         setError('Invalid code or error during signup');
         toast.error('Invalid code or error during signup');
