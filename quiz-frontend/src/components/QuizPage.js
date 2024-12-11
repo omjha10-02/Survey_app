@@ -146,6 +146,7 @@
 
 // export default QuizPage;
 
+REACT_APP_API_BASE_URL
 
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
@@ -153,7 +154,10 @@ import { useNavigate } from 'react-router-dom';
 import toast, { Toaster } from 'react-hot-toast';
 import './QuizPage.css'; // Import CSS file for styling
 
-const BASE_URL = process.env.REACT_APP_API_BASE_URL || 'https://survey-app-b003.onrender.com'; // Configurable base URL
+// Define the base API URL dynamically based on the environment
+const API_BASE_URL = process.env.NODE_ENV === 'production'
+  ? 'https://survey-app-b003.onrender.com' // Production API URL
+  : 'http://127.0.0.1:5000'; // Local development API URL
 
 const QuizPage = () => {
   const [questions, setQuestions] = useState([]);
@@ -166,7 +170,7 @@ const QuizPage = () => {
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
-        const response = await axios.get('https://survey-app-b003.onrender.com/api/quiz/questions');
+        const response = await axios.get(`${API_BASE_URL}/api/quiz/questions`);
         setQuestions(response.data);
       } catch (err) {
         console.error('Error fetching questions', err);
@@ -196,7 +200,7 @@ const QuizPage = () => {
     };
 
     try {
-      await axios.post('https://survey-app-b003.onrender.com/api/quiz/responses', responseData);
+      await axios.post(`${API_BASE_URL}/api/quiz/responses`, responseData);
       toast.success('Response submitted successfully!');
     } catch (err) {
       console.error('Error submitting response', err);
@@ -221,7 +225,7 @@ const QuizPage = () => {
     };
 
     try {
-      await axios.post('https://survey-app-b003.onrender.com/api/quiz/responses', responseData);
+      await axios.post(`${API_BASE_URL}/api/quiz/responses`, responseData);
       toast.success('Quiz submitted successfully!', {
         duration: 3000,
         onClose: () => {
@@ -244,12 +248,10 @@ const QuizPage = () => {
   const isLastQuestion = currentQuestionIndex === questions.length - 1;
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500">
+    <div className="quiz-page-container">
       <Toaster />
-      <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-md">
-        <h2 className="text-3xl font-bold text-gray-800 text-center mb-6">
-          Quiz
-        </h2>
+      <div className="quiz-card">
+        <h2 className="quiz-title">Quiz</h2>
         <div className="progress-bar">
           <div
             className="progress"
@@ -287,7 +289,7 @@ const QuizPage = () => {
             {!isLastQuestion ? (
               <button
                 type="button"
-                className="w-full bg-gradient-to-r from-green-400 to-blue-500 text-white py-2 px-4 rounded-lg font-semibold hover:from-blue-500 hover:to-green-400 transition-transform transform hover:scale-105"
+                className="next-button"
                 onClick={handleNextQuestion}
               >
                 Next
@@ -295,14 +297,14 @@ const QuizPage = () => {
             ) : (
               <button
                 type="button"
-                className="w-full bg-gradient-to-r from-green-400 to-blue-500 text-white py-2 px-4 rounded-lg font-semibold hover:from-blue-500 hover:to-green-400 transition-transform transform hover:scale-105"
+                className="submit-button"
                 onClick={handleSubmitQuiz}
               >
                 Submit Quiz
               </button>
             )}
           </div>
-          {error && <p className="text-red-600 text-sm font-semibold">{error}</p>}
+          {error && <p className="error-text">{error}</p>}
         </div>
       </div>
     </div>
@@ -310,5 +312,6 @@ const QuizPage = () => {
 };
 
 export default QuizPage;
+
 
 
