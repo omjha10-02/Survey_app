@@ -174,7 +174,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { Timer } from './Timer'; // Assuming Timer is in a separate file
+//import { Timer } from './Timer'; // Assuming Timer is in a separate file
 import Question from './components/Question'; // Assuming Question is in a separate file
 import toast, { Toaster } from 'react-hot-toast';
 import './App.css';
